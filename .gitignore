@@ -1,3 +1,23 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production & Build outputs
+dist/
+dist-ssr/
+build/
+*.local
+
+# Environment variables & secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+!.env.example
+
 # Logs
 logs
 *.log
@@ -7,20 +27,64 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Editor & OS files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.vscode/
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.sublime-project
+*.sublime-workspace
 
-docs
+# AI Assistant & Agent directories & files
+.gemini
+.gemini/
+.antigravity
+.antigravity/
+.system_generated
+.system_generated/
+scratch
+scratch/
+.planning
+.planning/
+.claude
+.claude/
+CLAUDE.md.local
+.claude-session
+.claude_settings
+.cursor
+.cursor/
+.cursorrules
+.cursorrules.*
+.cursorrules.local
+.copilot
+.copilot/
+.github/copilot-instructions.md.local
+.windsurf
+.windsurf/
+.codeium
+.codeium/
+.aider*
+.cline
+.cline/
+.roomodes
+*.ai-session
+*chat-history*
+
+# Temporary caches
+.eslintcache
+.cache/
+.temp/
+tmp/
+
+# Documentation / Reference files (ignored per project config)
+docs/
