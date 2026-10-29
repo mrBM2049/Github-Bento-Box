@@ -10,14 +10,14 @@ A high-contrast, editorial Bento grid dashboard for visualizing GitHub developer
 - **Icons & Motion:** `lucide-react`, `framer-motion`
 - **Export:** `html-to-image`
 
-## Design Palette
+## Design Palette (GitHub Theme)
 
-- **Prussian Blue:** `#0B132B`
-- **Space Indigo:** `#1C2541`
-- **Dusk Blue:** `#3A506B`
-- **Tropical Teal:** `#5BC0BE`
-- **Canvas Tint:** `#EEF5F6`
-- **Pure White:** `#FFFFFF`
+- **Canvas (Cool Gray 1):** `#F2F5F3`
+- **GitHub Green (Green 4):** `#0FBF3E`
+- **Green Highlights (Green 1–3):** `#BFFFD1`, `#8CF2A6`, `#5FED83`
+- **Forest & Deep Green (Green 5–6):** `#08872B`, `#0A241B`
+- **Process Black & Charcoal (Gray 5–6):** `#232925`, `#101411`
+- **Neutral Grays (Gray 2–4):** `#E4EBE6`, `#B6BFB8`, `#909692`
 
 ## Getting Started
 

@@ -25,7 +25,7 @@ export default function App() {
       const dataUrl = await toPng(bentoRef.current, {
         cacheBust: true,
         pixelRatio: 2,
-        backgroundColor: "#eef5f6",
+        backgroundColor: "#F2F5F3",
       });
       const link = document.createElement("a");
       link.download = `${data.profile.login}-bento-card.png`;

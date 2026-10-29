@@ -13,7 +13,7 @@ export const BentoContainer = forwardRef(function BentoContainer(
   { data, onSearch, onExport, isExporting },
   ref
 ) {
-  const { profile, totalStars, topRepo, topLanguages, impactRating } = data;
+  const { profile, totalStars, topRepo, topLanguages, impactRating, contributions } = data;
 
   return (
     <motion.div
@@ -34,6 +34,7 @@ export const BentoContainer = forwardRef(function BentoContainer(
         profile={profile}
         totalStars={totalStars}
         impactRating={impactRating}
+        contributions={contributions}
       />
       <LanguageDeckTile topLanguages={topLanguages} />
       <AvatarPortraitTile profile={profile} />

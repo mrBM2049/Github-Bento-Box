@@ -35,7 +35,7 @@ export function BrandMarkTile({ login }) {
               strokeWidth="9"
               strokeLinecap="round"
             />
-            <circle cx="40" cy="40" r="7" fill="#5BC0BE" />
+            <circle cx="40" cy="40" r="7" fill="#0FBF3E" />
           </svg>
         </div>
       </div>

@@ -6,7 +6,7 @@ export function BioQuoteTile({ profile }) {
   const memberSince = formatYear(profile?.created_at);
   const headline = profile?.company
     ? `SHAPING SYSTEMS AT ${profile.company.replace(/^@/, "").toUpperCase()}!`
-    : `BUILDING OPEN SOURCE SINCE ${memberSince}!`;
+    : `BUILDING SINCE ${memberSince}!`;
 
   return (
     <motion.div
