@@ -1,11 +1,49 @@
 import { useState, useEffect, useCallback } from "react";
 import { SWATCH_PALETTE } from "../constants/palette";
 
-export function useGitHubBento(initialUsername = "torvalds") {
+async function fetchPinnedRepositories(cleanUser) {
+  try {
+    const res = await fetch(`https://pinned.berrysauce.dev/get/${cleanUser}?_t=${Date.now()}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
+  } catch {
+    // Continue to fallback endpoint
+  }
+
+  try {
+    const fallbackRes = await fetch(`https://gh-pinned-repos-api.ysnirix.xyz/api/get/?username=${cleanUser}`);
+    if (fallbackRes.ok) {
+      const fallbackData = await fallbackRes.json();
+      if (Array.isArray(fallbackData?.response) && fallbackData.response.length > 0) {
+        return fallbackData.response;
+      }
+    }
+  } catch {
+    // Return empty on failure
+  }
+
+  return [];
+}
+
+export function useGitHubBento(initialUsername = "mrBM2049") {
   const [username, setUsername] = useState(initialUsername);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [fetchIndex, setFetchIndex] = useState(0);
+
+  const refresh = useCallback(() => {
+    setLoading(true);
+    setFetchIndex((prev) => prev + 1);
+  }, []);
+
+  const searchUser = useCallback((newUser) => {
+    setUsername(newUser);
+    setLoading(true);
+    setError(null);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -14,43 +52,27 @@ export function useGitHubBento(initialUsername = "torvalds") {
       const cleanUser = username.trim().replace(/^@/, "");
       if (!cleanUser) return;
 
-      const cacheKey = `gh_bento_v2_${cleanUser.toLowerCase()}`;
-      const cached = sessionStorage.getItem(cacheKey);
-      if (cached) {
-        try {
-          if (active) {
-            setData(JSON.parse(cached));
-            setLoading(false);
-          }
-          return;
-        } catch {
-          sessionStorage.removeItem(cacheKey);
-        }
-      }
-
       try {
-        const [userRes, reposRes, contribRes, pinnedRes] = await Promise.allSettled([
+        const [userRes, reposRes, contribRes, pinnedData] = await Promise.all([
           fetch(`https://api.github.com/users/${cleanUser}`),
           fetch(`https://api.github.com/users/${cleanUser}/repos?per_page=100&sort=pushed`),
-          fetch(`https://github-contributions-api.jogruber.de/v4/${cleanUser}?y=last`),
-          fetch(`https://gh-pinned-repos-api.ysnirix.xyz/api/get/?username=${cleanUser}`),
+          fetch(`https://github-contributions-api.jogruber.de/v4/${cleanUser}?y=last`).catch(() => null),
+          fetchPinnedRepositories(cleanUser),
         ]);
 
-        if (userRes.status === "rejected" || !userRes.value.ok) {
-          if (userRes.value?.status === 404) throw new Error("GitHub user not found.");
-          if (userRes.value?.status === 403) throw new Error("API rate limit exceeded. Try again later.");
+        if (!userRes.ok) {
+          if (userRes.status === 404) throw new Error("GitHub user not found.");
+          if (userRes.status === 403) throw new Error("API rate limit exceeded. Try again later.");
           throw new Error("Failed to fetch GitHub profile.");
         }
 
-        const profile = await userRes.value.json();
-        const repos = reposRes.status === "fulfilled" && reposRes.value.ok
-          ? await reposRes.value.json()
-          : [];
+        const profile = await userRes.json();
+        const repos = reposRes.ok ? await reposRes.json() : [];
 
         let contributions = null;
-        if (contribRes.status === "fulfilled" && contribRes.value.ok) {
+        if (contribRes?.ok) {
           try {
-            const contribData = await contribRes.value.json();
+            const contribData = await contribRes.json();
             if (contribData?.total?.lastYear != null) {
               contributions = contribData.total.lastYear;
             }
@@ -63,25 +85,27 @@ export function useGitHubBento(initialUsername = "torvalds") {
         const totalStars = ownRepos.reduce((sum, r) => sum + (r.stargazers_count || 0), 0);
         const totalForks = ownRepos.reduce((sum, r) => sum + (r.forks_count || 0), 0);
 
+        const list = Array.isArray(pinnedData)
+          ? pinnedData
+          : Array.isArray(pinnedData?.response)
+          ? pinnedData.response
+          : [];
+
         let pinnedRepos = [];
-        if (pinnedRes.status === "fulfilled" && pinnedRes.value.ok) {
-          try {
-            const pinnedData = await pinnedRes.value.json();
-            if (Array.isArray(pinnedData?.response) && pinnedData.response.length > 0) {
-              pinnedRepos = pinnedData.response.slice(0, 6).map((r, i) => ({
-                id: `pinned-${i}-${r.name}`,
-                name: r.name,
-                html_url: r.repo,
-                description: r.description,
-                stargazers_count: r.stars || 0,
-                forks_count: r.forks || 0,
-                language: r.language?.name || (typeof r.language === "string" ? r.language : "Code"),
-                isPinned: true,
-              }));
-            }
-          } catch {
-            pinnedRepos = [];
-          }
+        if (list.length > 0) {
+          pinnedRepos = list.slice(0, 6).map((r, i) => {
+            const matched = ownRepos.find((repo) => repo.name.toLowerCase() === r.name?.toLowerCase());
+            return {
+              id: `pinned-${i}-${r.name}`,
+              name: r.name,
+              html_url: matched?.html_url || r.repo || `https://github.com/${r.author || cleanUser}/${r.name}`,
+              description: matched?.description || r.description || "Public repository on GitHub.",
+              stargazers_count: matched?.stargazers_count ?? (r.stars || 0),
+              forks_count: matched?.forks_count ?? (r.forks || 0),
+              language: matched?.language || r.language?.name || (typeof r.language === "string" ? r.language : "Source"),
+              isPinned: true,
+            };
+          });
         }
 
         const sortedByStars = [...ownRepos].sort((a, b) => b.stargazers_count - a.stargazers_count);
@@ -136,7 +160,6 @@ export function useGitHubBento(initialUsername = "torvalds") {
           contributions,
         };
 
-        sessionStorage.setItem(cacheKey, JSON.stringify(aggregated));
         if (active) {
           setData(aggregated);
           setError(null);
@@ -153,13 +176,7 @@ export function useGitHubBento(initialUsername = "torvalds") {
     return () => {
       active = false;
     };
-  }, [username]);
+  }, [username, fetchIndex]);
 
-  const searchUser = useCallback((newUser) => {
-    setUsername(newUser);
-    setLoading(true);
-    setError(null);
-  }, []);
-
-  return { data, loading, error, searchUser };
+  return { data, loading, error, searchUser, refresh };
 }
