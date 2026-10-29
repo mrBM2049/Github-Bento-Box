@@ -1,9 +1,13 @@
+import { motion } from "framer-motion";
 import { formatNumber } from "../../utils/formatters";
+import { tileVariants } from "../../constants/motion";
 
-export function FeaturedRepoTile({ topRepo, onExport }) {
+export function FeaturedRepoTile({ topRepo, onExport, isExporting }) {
   return (
-    <div className="col-span-12 lg:col-span-5 min-h-[220px] rounded-bento overflow-hidden bg-teal flex shadow-md relative">
-      {/* Main Prussian Dark Panel */}
+    <motion.div
+      variants={tileVariants}
+      className="col-span-12 md:col-span-3 lg:col-span-5 md:order-7 lg:order-none min-h-[220px] rounded-bento overflow-hidden bg-teal flex shadow-md relative"
+    >
       <div className="w-[76%] bg-prussian rounded-r-[26px] p-5 sm:p-6 text-white flex flex-col justify-between shadow-2xl z-10">
         <div className="flex items-center justify-between text-xs font-mono">
           <span className="text-teal uppercase tracking-wider font-semibold">FEATURED REPO</span>
@@ -36,24 +40,30 @@ export function FeaturedRepoTile({ topRepo, onExport }) {
         </div>
       </div>
 
-      {/* Exposed Teal Accent Side */}
       <div className="w-[24%] flex flex-col items-center justify-center p-3 text-prussian">
         <button
           onClick={onExport}
+          disabled={isExporting}
           title="Export / Share Bento"
-          className="w-12 h-12 rounded-full bg-prussian text-teal flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 duration-150"
+          className="w-12 h-12 rounded-full bg-prussian text-teal flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-60 duration-150"
         >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
+          {isExporting ? (
+            <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+            </svg>
+          ) : (
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+          )}
         </button>
         <span className="text-[10px] font-mono font-bold tracking-wider uppercase mt-2 text-prussian text-center">
-          EXPORT
+          {isExporting ? "SAVING..." : "EXPORT"}
         </span>
       </div>
-    </div>
+    </motion.div>
   );
 }
-

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { tileVariants } from "../../constants/motion";
 
 export function HandleSearchTile({ login, name, onSearch }) {
   const [editing, setEditing] = useState(false);
@@ -14,7 +16,10 @@ export function HandleSearchTile({ login, name, onSearch }) {
   };
 
   return (
-    <div className="col-span-12 sm:col-span-6 lg:col-span-5 min-h-[220px] rounded-bento bg-white text-prussian p-6 sm:p-7 flex flex-col justify-between border border-prussian/5 shadow-sm">
+    <motion.div
+      variants={tileVariants}
+      className="col-span-12 md:col-span-4 lg:col-span-5 md:order-2 lg:order-none min-h-[220px] rounded-bento bg-white text-prussian p-6 sm:p-7 flex flex-col justify-between border border-prussian/5 shadow-sm"
+    >
       <div className="flex items-center justify-between text-xs font-mono">
         <span className="text-dusk uppercase tracking-widest font-semibold">IDENTITY &amp; HANDLE</span>
         <button
@@ -66,7 +71,6 @@ export function HandleSearchTile({ login, name, onSearch }) {
         <span>PUBLIC GITHUB IDENTITY</span>
         <span className="text-teal font-semibold">ACTIVE PROFILE</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
-

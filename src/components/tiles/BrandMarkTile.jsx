@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { tileVariants } from "../../constants/motion";
 
 export function BrandMarkTile({ login }) {
   const [copied, setCopied] = useState(false);
@@ -11,10 +13,11 @@ export function BrandMarkTile({ login }) {
   };
 
   return (
-    <div
+    <motion.div
+      variants={tileVariants}
       onClick={handleCopy}
       title="Click to copy profile URL"
-      className="col-span-12 sm:col-span-6 lg:col-span-3 min-h-[220px] rounded-bento bg-indigo text-white p-6 flex flex-col justify-between cursor-pointer transition-transform hover:-translate-y-0.5 duration-200 select-none relative"
+      className="col-span-12 md:col-span-2 lg:col-span-3 md:order-1 lg:order-none min-h-[220px] rounded-bento bg-indigo text-white p-6 flex flex-col justify-between cursor-pointer transition-transform hover:-translate-y-0.5 duration-200 select-none relative"
     >
       <div className="flex items-center justify-between">
         <span className="font-mono text-xs tracking-wider text-teal font-semibold">OCTO // 01</span>
@@ -43,7 +46,6 @@ export function BrandMarkTile({ login }) {
           {copied ? "URL COPIED ✓" : "CLICK TO COPY"}
         </span>
       </div>
-    </div>
+    </motion.div>
   );
 }
-

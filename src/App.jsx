@@ -1,10 +1,12 @@
 import { useState, useRef } from "react";
+import { toPng } from "html-to-image";
 import { useGitHubBento } from "./hooks/useGitHubBento";
 import { BentoContainer } from "./components/BentoContainer";
 import { SkeletonBento } from "./components/SkeletonBento";
 
 export default function App() {
   const [searchInput, setSearchInput] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
   const bentoRef = useRef(null);
   const { data, loading, error, searchUser } = useGitHubBento("torvalds");
 
@@ -13,6 +15,26 @@ export default function App() {
     if (searchInput.trim()) {
       searchUser(searchInput.trim());
       setSearchInput("");
+    }
+  };
+
+  const handleDownloadPng = async () => {
+    if (!bentoRef.current || !data?.profile?.login) return;
+    try {
+      setIsExporting(true);
+      const dataUrl = await toPng(bentoRef.current, {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: "#eef5f6",
+      });
+      const link = document.createElement("a");
+      link.download = `${data.profile.login}-bento-card.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch {
+      // Ignore export failures
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -51,6 +73,8 @@ export default function App() {
               ref={bentoRef}
               data={data}
               onSearch={searchUser}
+              onExport={handleDownloadPng}
+              isExporting={isExporting}
             />
           )
         )}

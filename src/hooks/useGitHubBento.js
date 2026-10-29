@@ -57,24 +57,34 @@ export function useGitHubBento(initialUsername = "torvalds") {
           }
         });
 
-        const topLanguages = Object.entries(langCounts)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 5)
-          .map(([lang, count], index) => ({
-            name: lang,
-            count,
-            percentage: totalLangRepos ? Math.round((count / totalLangRepos) * 100) : 0,
-            ...SWATCH_PALETTE[index],
-          }));
-
-        while (topLanguages.length < 5) {
-          const idx = topLanguages.length;
-          topLanguages.push({
-            name: idx === 4 ? "Other" : "N/A",
+        let topLanguages = [];
+        if (totalLangRepos === 0) {
+          topLanguages = SWATCH_PALETTE.map((swatch) => ({
+            name: swatch.label,
             count: 0,
             percentage: 0,
-            ...SWATCH_PALETTE[idx],
-          });
+            ...swatch,
+          }));
+        } else {
+          topLanguages = Object.entries(langCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([lang, count], index) => ({
+              name: lang,
+              count,
+              percentage: Math.round((count / totalLangRepos) * 100),
+              ...SWATCH_PALETTE[index],
+            }));
+
+          while (topLanguages.length < 5) {
+            const idx = topLanguages.length;
+            topLanguages.push({
+              name: SWATCH_PALETTE[idx].label,
+              count: 0,
+              percentage: 0,
+              ...SWATCH_PALETTE[idx],
+            });
+          }
         }
 
         const rawScore = Math.min(5.0, 3.5 + Math.log10(totalStars + profile.followers + 10) * 0.35);

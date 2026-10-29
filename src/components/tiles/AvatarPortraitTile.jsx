@@ -1,6 +1,12 @@
+import { motion } from "framer-motion";
+import { tileVariants } from "../../constants/motion";
+
 export function AvatarPortraitTile({ profile }) {
   return (
-    <div className="col-span-12 sm:col-span-6 lg:col-span-4 min-h-[220px] rounded-bento bg-dusk text-white p-6 relative overflow-hidden flex flex-col justify-between shadow-md">
+    <motion.div
+      variants={tileVariants}
+      className="col-span-12 md:col-span-3 lg:col-span-4 md:order-6 lg:order-none min-h-[220px] rounded-bento bg-dusk text-white p-6 relative overflow-hidden flex flex-col justify-between shadow-md"
+    >
       <div className="flex items-center justify-between text-xs font-mono relative z-10">
         <span className="text-teal uppercase tracking-widest font-semibold">PORTRAIT ARCHIVE</span>
         <span className="text-white/60">ID // {profile?.id || "N/A"}</span>
@@ -35,7 +41,6 @@ export function AvatarPortraitTile({ profile }) {
         <span>DEV AVATAR</span>
         <span className="text-teal font-medium">AUTHENTICATED</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
-

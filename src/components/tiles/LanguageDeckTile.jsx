@@ -1,3 +1,6 @@
+import { motion } from "framer-motion";
+import { tileVariants } from "../../constants/motion";
+
 export function LanguageDeckTile({ topLanguages }) {
   const getSubLabel = (idx) => {
     if (idx === 0) return "Primary";
@@ -8,8 +11,11 @@ export function LanguageDeckTile({ topLanguages }) {
   };
 
   return (
-    <div className="col-span-12 lg:col-span-8 min-h-[240px] rounded-bento overflow-hidden bg-canvas border border-prussian/10 shadow-sm flex flex-col justify-between">
-      <div className="flex w-full h-full min-h-[240px]">
+    <motion.div
+      variants={tileVariants}
+      className="col-span-12 md:col-span-6 lg:col-span-8 md:order-3 lg:order-none min-h-[240px] rounded-bento overflow-hidden bg-canvas border border-prussian/10 shadow-sm flex flex-col justify-between"
+    >
+      <div className="flex flex-col sm:flex-row w-full h-full min-h-[240px]">
         {topLanguages.map((lang, index) => {
           const isOverlapping = index > 0;
           return (
@@ -20,9 +26,9 @@ export function LanguageDeckTile({ topLanguages }) {
                 color: lang.text,
                 zIndex: index + 1,
               }}
-              className={`flex-1 min-w-[70px] sm:min-w-[90px] p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 hover:flex-[1.4] cursor-default select-none ${
+              className={`flex-1 min-w-0 p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 hover:flex-[1.4] cursor-default select-none min-h-[70px] sm:min-h-[240px] ${
                 isOverlapping
-                  ? "-ml-5 sm:-ml-7 rounded-l-bento shadow-2xl border-l border-white/10"
+                  ? "-mt-4 sm:mt-0 sm:-ml-7 rounded-t-bento sm:rounded-t-none sm:rounded-l-bento shadow-2xl border-t sm:border-t-0 sm:border-l border-white/10"
                   : ""
               }`}
             >
@@ -35,19 +41,18 @@ export function LanguageDeckTile({ topLanguages }) {
                 </span>
               </div>
 
-              <div>
+              <div className="flex sm:block items-baseline justify-between mt-2 sm:mt-0">
                 <div className="font-mono text-xl sm:text-2xl font-bold leading-none">
-                  {lang.percentage}%
+                  {lang.percentage > 0 ? `${lang.percentage}%` : lang.hex}
                 </div>
                 <div className="text-[10px] sm:text-xs font-mono opacity-80 mt-1 truncate">
-                  {lang.count > 0 ? `${lang.count} repos` : lang.hex}
+                  {lang.count > 0 ? `${lang.count} repos` : "Palette Swatch"}
                 </div>
               </div>
             </div>
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 }
-

@@ -1,9 +1,13 @@
+import { motion } from "framer-motion";
 import { formatNumber } from "../../utils/formatters";
+import { tileVariants } from "../../constants/motion";
 
 export function TallScoreCard({ profile, totalStars, impactRating }) {
   return (
-    <div className="col-span-12 md:col-span-6 lg:col-span-4 lg:row-span-2 min-h-[460px] rounded-bento bg-indigo text-white flex flex-col justify-between overflow-hidden shadow-md">
-      {/* Top Bar */}
+    <motion.div
+      variants={tileVariants}
+      className="col-span-12 md:col-span-3 lg:col-span-4 lg:row-span-2 md:order-4 lg:order-none min-h-[460px] rounded-bento bg-indigo text-white flex flex-col justify-between overflow-hidden shadow-md"
+    >
       <div className="p-6 pb-4 border-b border-white/10 flex items-center justify-between text-xs font-mono">
         <div className="flex items-center gap-2 text-white/80 truncate">
           <span className="w-2 h-2 rounded-full bg-teal" />
@@ -14,7 +18,6 @@ export function TallScoreCard({ profile, totalStars, impactRating }) {
         </svg>
       </div>
 
-      {/* Editorial Headline & Rating */}
       <div className="p-6 flex flex-col gap-4 my-auto">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-prussian self-start border border-white/10 text-xs font-mono">
           <span className="text-teal font-bold">★ {impactRating}</span>
@@ -30,7 +33,6 @@ export function TallScoreCard({ profile, totalStars, impactRating }) {
         </p>
       </div>
 
-      {/* Anchored Stats Dock */}
       <div className="bg-prussian p-5 border-t border-white/10 grid grid-cols-3 gap-2 text-center">
         <div>
           <div className="font-mono text-xl sm:text-2xl font-bold text-white">
@@ -57,7 +59,6 @@ export function TallScoreCard({ profile, totalStars, impactRating }) {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
-
