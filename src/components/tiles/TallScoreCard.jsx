@@ -14,7 +14,15 @@ export function TallScoreCard({ profile, totalStars, impactRating, contributions
       <div className="p-6 pb-4 border-b border-white/10 flex items-center justify-between text-xs font-mono">
         <div className="flex items-center gap-2 text-white/80 truncate">
           <span className="w-2 h-2 rounded-full bg-teal animate-pulse" />
-          <span className="truncate">github.com/{profile?.login}</span>
+          <a
+            href={`https://github.com/${profile?.login}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="truncate hover:text-teal transition-colors"
+            title={`Open github.com/${profile?.login}`}
+          >
+            github.com/{profile?.login}
+          </a>
         </div>
       </div>
 

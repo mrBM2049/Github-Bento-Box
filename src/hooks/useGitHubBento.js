@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { SWATCH_PALETTE } from "../constants/palette";
 
-export function useGitHubBento(initialUsername = "torvalds") {
+export function useGitHubBento(initialUsername = "lds") {
   const [username, setUsername] = useState(initialUsername);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,7 +14,7 @@ export function useGitHubBento(initialUsername = "torvalds") {
       const cleanUser = username.trim().replace(/^@/, "");
       if (!cleanUser) return;
 
-      const cacheKey = `gh_bento_${cleanUser.toLowerCase()}`;
+      const cacheKey = `gh_bento_v2_${cleanUser.toLowerCase()}`;
       const cached = sessionStorage.getItem(cacheKey);
       if (cached) {
         try {
@@ -29,10 +29,11 @@ export function useGitHubBento(initialUsername = "torvalds") {
       }
 
       try {
-        const [userRes, reposRes, contribRes] = await Promise.allSettled([
+        const [userRes, reposRes, contribRes, pinnedRes] = await Promise.allSettled([
           fetch(`https://api.github.com/users/${cleanUser}`),
           fetch(`https://api.github.com/users/${cleanUser}/repos?per_page=100&sort=pushed`),
           fetch(`https://github-contributions-api.jogruber.de/v4/${cleanUser}?y=last`),
+          fetch(`https://gh-pinned-repos-api.ysnirix.xyz/api/get/?username=${cleanUser}`),
         ]);
 
         if (userRes.status === "rejected" || !userRes.value.ok) {
@@ -62,8 +63,42 @@ export function useGitHubBento(initialUsername = "torvalds") {
         const totalStars = ownRepos.reduce((sum, r) => sum + (r.stargazers_count || 0), 0);
         const totalForks = ownRepos.reduce((sum, r) => sum + (r.forks_count || 0), 0);
 
+        let pinnedRepos = [];
+        if (pinnedRes.status === "fulfilled" && pinnedRes.value.ok) {
+          try {
+            const pinnedData = await pinnedRes.value.json();
+            if (Array.isArray(pinnedData?.response) && pinnedData.response.length > 0) {
+              pinnedRepos = pinnedData.response.slice(0, 6).map((r, i) => ({
+                id: `pinned-${i}-${r.name}`,
+                name: r.name,
+                html_url: r.repo,
+                description: r.description,
+                stargazers_count: r.stars || 0,
+                forks_count: r.forks || 0,
+                language: r.language?.name || (typeof r.language === "string" ? r.language : "Code"),
+                isPinned: true,
+              }));
+            }
+          } catch {
+            pinnedRepos = [];
+          }
+        }
+
         const sortedByStars = [...ownRepos].sort((a, b) => b.stargazers_count - a.stargazers_count);
-        const topRepo = sortedByStars[0] || null;
+        const topRepos = pinnedRepos.length > 0
+          ? pinnedRepos
+          : sortedByStars.slice(0, 6).map((r) => ({
+              id: r.id,
+              name: r.name,
+              html_url: r.html_url,
+              description: r.description,
+              stargazers_count: r.stargazers_count,
+              forks_count: r.forks_count,
+              language: r.language || "Source",
+              isPinned: false,
+            }));
+
+        const topRepo = topRepos[0] || null;
 
         const langCounts = {};
         let totalLangRepos = 0;
@@ -94,6 +129,8 @@ export function useGitHubBento(initialUsername = "torvalds") {
           totalStars,
           totalForks,
           topRepo,
+          topRepos,
+          isPinned: pinnedRepos.length > 0,
           topLanguages,
           impactRating,
           contributions,

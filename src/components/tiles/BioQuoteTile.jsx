@@ -11,7 +11,7 @@ export function BioQuoteTile({ profile }) {
   return (
     <motion.div
       variants={tileVariants}
-      className="col-span-12 md:col-span-3 lg:col-span-3 md:order-5 lg:order-none min-h-[220px] rounded-bento bg-indigo text-white p-6 relative flex flex-col justify-between shadow-md"
+      className="col-span-12 md:col-span-2 lg:col-span-3 min-h-[220px] rounded-bento bg-indigo text-white p-6 relative flex flex-col justify-between shadow-md"
     >
       <div className="absolute left-6 top-6 bottom-6 w-px bg-white/20 hidden sm:block" />
       <div className="absolute left-[15px] top-8 w-5 h-5 rounded-full bg-prussian border border-teal text-teal text-xs font-serif font-bold items-center justify-center hidden sm:flex">
