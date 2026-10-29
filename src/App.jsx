@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { toPng } from "html-to-image";
+import { Analytics } from "@vercel/analytics/react";
 import { useGitHubBento } from "./hooks/useGitHubBento";
 import { BentoContainer } from "./components/BentoContainer";
 import { SkeletonBento } from "./components/SkeletonBento";
@@ -39,7 +40,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-canvas text-prussian py-6 sm:py-10 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+    <>
+      <Analytics />
+      <div className="min-h-screen bg-canvas text-prussian py-6 sm:py-10 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
       <main className="w-full max-w-[1240px] mx-auto flex flex-col gap-6">
         {/* Centered Search Field */}
         <header className="flex flex-col items-center justify-center gap-2 w-full">
@@ -92,5 +95,6 @@ export default function App() {
         )}
       </main>
     </div>
+    </>
   );
 }
