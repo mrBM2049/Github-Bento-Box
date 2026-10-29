@@ -28,7 +28,7 @@ export function PinnedReposTile({ topRepos = [], isPinned = false, onExport, isE
         </div>
 
         {hasRepos ? (
-          <div className="flex gap-2.5 overflow-x-auto my-auto py-2.5 scroll-smooth select-none">
+          <div className="flex gap-2.5 overflow-x-auto my-auto py-2.5 scroll-smooth select-none no-scrollbar">
             {topRepos.map((repo) => (
               <a
                 key={repo.id}

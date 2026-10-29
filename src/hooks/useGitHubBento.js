@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { SWATCH_PALETTE } from "../constants/palette";
 
-export function useGitHubBento(initialUsername = "lds") {
+export function useGitHubBento(initialUsername = "torvalds") {
   const [username, setUsername] = useState(initialUsername);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);

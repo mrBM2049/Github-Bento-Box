@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 :root {
-  /* GitHub Theme Reference Palette */
   --gh-gray-1: #F2F5F3;
   --gh-gray-2: #E4EBE6;
   --gh-gray-3: #B6BFB8;
@@ -18,10 +17,7 @@
   --gh-green-5: #08872B;
   --gh-green-6: #0A241B;
 
-  --github-green: #0FBF3E;
   --canvas-bg: #F2F5F3;
-
-  /* Theme Mappings */
   --prussian-blue: #101411;
   --space-indigo:  #232925;
   --dusk-blue:     #0A241B;
@@ -40,4 +36,13 @@ body {
 
 .rounded-bento {
   border-radius: 28px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
